@@ -1,6 +1,6 @@
-includeTargets << grailsScript('Init')
+includeTargets << grailsScript('_GrailsInit')
 includeTargets << grailsScript('_GrailsBootstrap')
-includeTargets << new File("$springSecurityCorePluginDir", 'scripts/_S2Common.groovy')
+includeTargets << new File(springSecurityCorePluginDir, 'scripts/_S2Common.groovy')
 
 templateDir = "$springSecurityVkontaktePluginDir/src/templates"
 

@@ -24,10 +24,10 @@ import org.springframework.security.core.GrantedAuthority
  */
 class VkontakteUserDetails extends GrailsUser {
 
-    String firstName;
-    String lastName;
+    String firstName
+    String lastName
 
-    VkontakteUserDetails(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<GrantedAuthority> authorities, Object id) {
+    VkontakteUserDetails(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<GrantedAuthority> authorities, id) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities, id)
     }
 }

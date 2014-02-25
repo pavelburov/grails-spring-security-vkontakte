@@ -24,6 +24,8 @@ import java.util.concurrent.TimeUnit
  */
 class VkontakteAccessToken implements Serializable {
 
+    private static final long serialVersionUID = 1
+
     public static final String REQUEST_PARAMETER_USER_ID = "session[user][id]"
     public static final String REQUEST_PARAMETER_ACCESS_TOKEN = "session[sid]"
     public static final String REQUEST_PARAMETER_EXPIRE = "session[expire]"
@@ -36,7 +38,7 @@ class VkontakteAccessToken implements Serializable {
         return "Access token: ${accessToken}, expires at ${expireAt}"
     }
 
-    public static Date convertToExpireAt(Long expiresIn) {
+    static Date convertToExpireAt(Long expiresIn) {
         if (expiresIn) {
             return new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(expiresIn))
         }

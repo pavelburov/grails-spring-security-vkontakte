@@ -28,16 +28,8 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler
 
 class SpringSecurityVkontakteGrailsPlugin {
-    // the plugin version
     def version = "1.0-SNAPSHOT"
-    // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "2.2 > *"
-    // resources that are excluded from plugin packaging
-    def pluginExcludes = [
-            "grails-app/views/error.gsp"
-    ]
-
-    Map dependsOn = ['springSecurityCore': '2.0-RC2> *']
+    def grailsVersion = "2.0 > *"
     def observe = ["springSecurityCore"]
 
     def title = 'Vkontakte Authentication for Spring Security'
@@ -46,12 +38,8 @@ class SpringSecurityVkontakteGrailsPlugin {
     def description = 'Vkontakte authentication support for the Spring Security plugin.'
 
     def license = "APACHE"
-
-    // URL to the plugin's documentation
     def documentation = "http://pavelburov.github.io/grails-spring-security-vkontakte"
-    // Location of the plugin's issue tracker.
     def issueManagement = [system: "GitHub", url: "https://github.com/pavelburov/grails-spring-security-vkontakte/issues"]
-    // Online location of the plugin's browseable source code.
     def scm = [url: "https://github.com/pavelburov/grails-spring-security-vkontakte"]
 
     def doWithSpring = {

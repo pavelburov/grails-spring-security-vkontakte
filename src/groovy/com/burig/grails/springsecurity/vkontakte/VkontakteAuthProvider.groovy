@@ -16,25 +16,25 @@
 
 package com.burig.grails.springsecurity.vkontakte
 
-import org.apache.log4j.Logger
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 
 /**
- *
  * @author Pavel Burov
  */
-public class VkontakteAuthProvider implements AuthenticationProvider {
+class VkontakteAuthProvider implements AuthenticationProvider {
 
-    private static def log = Logger.getLogger(this)
+    private static Logger log = LoggerFactory.getLogger(this)
 
     VkontakteAuthDao vkontakteAuthDao
 
     boolean createNew = true
 
-    public Authentication authenticate(Authentication authentication) {
+    Authentication authenticate(Authentication authentication) {
         VkontakteAuthToken token = authentication as VkontakteAuthToken
 
         def user = vkontakteAuthDao.findUser(token)
@@ -55,8 +55,8 @@ public class VkontakteAuthProvider implements AuthenticationProvider {
             vkontakteAuthDao.updateToken(user, token)
         }
 
-        Object appUser = vkontakteAuthDao.getAppUser(user)
-        Object principal = vkontakteAuthDao.getPrincipal(appUser)
+        def appUser = vkontakteAuthDao.getAppUser(user)
+        def principal = vkontakteAuthDao.getPrincipal(appUser)
 
         token.details = null
         token.principal = principal
@@ -69,7 +69,7 @@ public class VkontakteAuthProvider implements AuthenticationProvider {
         return token
     }
 
-    public boolean supports(Class<? extends Object> authentication) {
-        return VkontakteAuthToken.isAssignableFrom(authentication);
+    boolean supports(Class<? extends Object> authentication) {
+        return VkontakteAuthToken.isAssignableFrom(authentication)
     }
 }

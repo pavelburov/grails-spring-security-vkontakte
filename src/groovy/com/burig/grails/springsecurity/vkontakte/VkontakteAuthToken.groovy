@@ -24,7 +24,9 @@ import org.springframework.security.core.GrantedAuthority
  *
  * @author Pavel Burov
  */
-public class VkontakteAuthToken extends AbstractAuthenticationToken implements Authentication, Serializable {
+class VkontakteAuthToken extends AbstractAuthenticationToken implements Authentication, Serializable {
+
+    private static final long serialVersionUID = 1
 
     public static final String REQUEST_PARAMETER_CODE = "session[sig]"
 
@@ -33,24 +35,23 @@ public class VkontakteAuthToken extends AbstractAuthenticationToken implements A
 
     Map userDetails
 
-    Object principal
+    def principal
 
     Collection<GrantedAuthority> authorities
 
     def VkontakteAuthToken() {
-        super([] as Collection<GrantedAuthority>);
+        super([] as Collection<GrantedAuthority>)
     }
 
-    public Long getUserId() {
-        return accessToken?.userId;
+    Long getUserId() {
+        return accessToken?.userId
     }
 
-    public Object getCredentials() {
+    def getCredentials() {
         return getUserId()
     }
 
     String toString() {
         return "Principal: $principal, userId: ${getUserId()}, roles: ${authorities.collect { it.authority }}"
     }
-
 }

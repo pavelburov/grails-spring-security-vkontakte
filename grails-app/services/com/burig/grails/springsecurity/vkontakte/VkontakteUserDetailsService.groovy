@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails
 class VkontakteUserDetailsService extends GormUserDetailsService {
 
     @Override
-    protected UserDetails createUserDetails(Object user, Collection<GrantedAuthority> authorities) {
+    protected UserDetails createUserDetails(user, Collection<GrantedAuthority> authorities) {
 
         def conf = SpringSecurityUtils.securityConfig
 

@@ -18,7 +18,7 @@ package com.burig.grails.springsecurity.vkontakte
 
 import org.springframework.security.core.GrantedAuthority
 
-public interface VkontakteAuthDao<F, A> {
+interface VkontakteAuthDao<F, A> {
 
     /**
      * Tries to find existing user for Vkontakte Token
@@ -44,7 +44,7 @@ public interface VkontakteAuthDao<F, A> {
      * @param user current app user (main spring security core domain instance)
      * @return user to put into Security Context
      */
-    Object getPrincipal(A user)
+    def getPrincipal(A user)
 
     /**
      * Return main (spring security user domain) for given Vkontakte user. If it's same domain, just return
@@ -76,7 +76,7 @@ public interface VkontakteAuthDao<F, A> {
      * @param user target user
      * @return false when user have invalid token, or don't have token
      */
-    Boolean hasValidToken(F user)
+    boolean hasValidToken(F user)
 
     /**
      * Setup a new Vkontakte Access Token if needed. Could be called with existing token, so

@@ -36,7 +36,7 @@ class VkontakteAuthTagLib {
      *
      * @attr async - use or not asynchronous initialization. Default: false
      */
-    def init = { attrs, body ->
+    def init = { attrs ->
         Boolean init = request.getAttribute(MARKER)
         if (init == null) {
             init = false
@@ -118,7 +118,7 @@ class VkontakteAuthTagLib {
     /**
      * Renders the user's "$firstName $lastName" if logged in.
      */
-    def username = { attrs, body ->
+    def username = { attrs ->
         if (springSecurityService.isLoggedIn()) {
             if (springSecurityService.getAuthentication() instanceof VkontakteAuthToken) {
                 String firstName = sec.loggedInUserInfo(field: 'firstName', '')

@@ -18,7 +18,8 @@ package com.burig.grails.springsecurity.vkontakte
 
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.userdetails.GormUserDetailsService
-import org.apache.log4j.Logger
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 import org.springframework.beans.factory.InitializingBean
@@ -26,18 +27,17 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.security.core.GrantedAuthority
-import org.springframework.security.core.authority.GrantedAuthorityImpl
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 import java.util.concurrent.TimeUnit
 
 /**
- *
  * @author Pavel Burov
  */
 class DefaultVkontakteAuthDao implements VkontakteAuthDao<Object, Object>, InitializingBean, ApplicationContextAware, GrailsApplicationAware {
 
-    private static def log = Logger.getLogger(this)
+    private static Logger log = LoggerFactory.getLogger(this)
 
     GrailsApplication grailsApplication
     ApplicationContext applicationContext
@@ -75,14 +75,14 @@ class DefaultVkontakteAuthDao implements VkontakteAuthDao<Object, Object>, Initi
         return grailsApplication.getDomainClass(userDomainClassName)?.clazz
     }
 
-    Object getProvidedUser(Object appUser) {
+    def getProvidedUser(appUser) {
         if (vkontakteAuthService && appUser != null && vkontakteAuthService.respondsTo('getProvidedUser', appUser.class)) {
             return vkontakteAuthService.getProvidedUser(appUser)
         }
         if (isSameDomain()) {
             return appUser
         } else {
-            Object loaded = null
+            def loaded
             Class DomainClass = getProvidedUserDomainClass()
             DomainClass.withTransaction { status ->
                 loaded = DomainClass.findWhere((userConnectionPropertyName): appUser)
@@ -91,7 +91,7 @@ class DefaultVkontakteAuthDao implements VkontakteAuthDao<Object, Object>, Initi
         }
     }
 
-    Object getAppUser(Object providedUser) {
+    def getAppUser(providedUser) {
         if (vkontakteAuthService && providedUser != null && vkontakteAuthService.respondsTo('getAppUser', providedUser.class)) {
             return vkontakteAuthService.getAppUser(providedUser)
         }
@@ -102,7 +102,7 @@ class DefaultVkontakteAuthDao implements VkontakteAuthDao<Object, Object>, Initi
         if (isSameDomain()) {
             return providedUser
         } else {
-            Object result = null
+            def result
             getProvidedUserDomainClass().withTransaction { status ->
                 providedUser.merge()
                 result = providedUser.getProperty(userConnectionPropertyName)
@@ -111,11 +111,11 @@ class DefaultVkontakteAuthDao implements VkontakteAuthDao<Object, Object>, Initi
         }
     }
 
-    Object findUser(VkontakteAuthToken token) {
+    def findUser(VkontakteAuthToken token) {
         if (vkontakteAuthService && vkontakteAuthService.respondsTo('findUser', Long)) {
             return vkontakteAuthService.findUser(token)
         }
-        Object user = null
+        def user
         Class DomainClass = getProvidedUserDomainClass()
         DomainClass.withTransaction { status ->
             user = DomainClass.findWhere("${userIdPropertyName}": token.getUserId())
@@ -125,7 +125,7 @@ class DefaultVkontakteAuthDao implements VkontakteAuthDao<Object, Object>, Initi
             if (!isSameDomain()) {
                 if (userConnectionPropertyName != null && userConnectionPropertyName.length() > 0) {
                     // load the User object to memory prevent LazyInitializationException
-                    Object appUser = user.getProperty(userConnectionPropertyName)
+                    def appUser = user.getProperty(userConnectionPropertyName)
                     if (appUser == null) {
                         log.warn("No appUser for providedUser ${user}. Property ${userConnectionPropertyName} have null value")
                     }
@@ -137,7 +137,7 @@ class DefaultVkontakteAuthDao implements VkontakteAuthDao<Object, Object>, Initi
         return user
     }
 
-    Object create(VkontakteAuthToken token) {
+    def create(VkontakteAuthToken token) {
         if (vkontakteAuthService && vkontakteAuthService.respondsTo('create', VkontakteAuthToken)) {
             return vkontakteAuthService.create(token)
         }
@@ -225,7 +225,7 @@ class DefaultVkontakteAuthDao implements VkontakteAuthDao<Object, Object>, Initi
         return user
     }
 
-    Object getPrincipal(Object user) {
+    def getPrincipal(user) {
         if (vkontakteAuthService && user != null && vkontakteAuthService.respondsTo('getPrincipal', user.class)) {
             return vkontakteAuthService.getPrincipal(user)
         }
@@ -235,7 +235,7 @@ class DefaultVkontakteAuthDao implements VkontakteAuthDao<Object, Object>, Initi
         return user
     }
 
-    Collection<GrantedAuthority> getRoles(Object user) {
+    Collection<GrantedAuthority> getRoles(user) {
         if (vkontakteAuthService && user != null && vkontakteAuthService.respondsTo('getRoles', user.class)) {
             return vkontakteAuthService.getRoles(user)
         }
@@ -266,14 +266,14 @@ class DefaultVkontakteAuthDao implements VkontakteAuthDao<Object, Object>, Initi
         }
         return roles.collect {
             if (it instanceof String) {
-                return new GrantedAuthorityImpl(it.toString())
+                return new SimpleGrantedAuthority(it.toString())
             } else {
-                new GrantedAuthorityImpl(it.getProperty(conf.authority.nameField))
+                new SimpleGrantedAuthority(it.getProperty(conf.authority.nameField))
             }
         }
     }
 
-    Boolean hasValidToken(Object providedUser) {
+    boolean hasValidToken(providedUser) {
         if (vkontakteAuthService && providedUser != null && vkontakteAuthService.respondsTo('hasValidToken', providedUser.class)) {
             return vkontakteAuthService.hasValidToken(providedUser)
         }
@@ -297,7 +297,7 @@ class DefaultVkontakteAuthDao implements VkontakteAuthDao<Object, Object>, Initi
         return true
     }
 
-    void updateToken(Object providedUser, VkontakteAuthToken token) {
+    void updateToken(providedUser, VkontakteAuthToken token) {
         if (vkontakteAuthService && providedUser != null && vkontakteAuthService.respondsTo('updateToken', providedUser.class, VkontakteAuthToken)) {
             vkontakteAuthService.updateToken(providedUser, token)
             return
@@ -362,13 +362,13 @@ class DefaultVkontakteAuthDao implements VkontakteAuthDao<Object, Object>, Initi
         }
     }
 
-    boolean equalDates(Object x, Object y) {
+    boolean equalDates(x, y) {
         long xtime = dateToLong(x)
         long ytime = dateToLong(y)
         return xtime >= 0 && ytime >= 0 && Math.abs(xtime - ytime) < 1000 //for dates w/o millisecond
     }
 
-    long dateToLong(Object date) {
+    long dateToLong(date) {
         if (date == null) {
             return -1
         }
@@ -382,7 +382,7 @@ class DefaultVkontakteAuthDao implements VkontakteAuthDao<Object, Object>, Initi
         return -1
     }
 
-    String getAccessToken(Object providedUser) {
+    String getAccessToken(providedUser) {
         if (vkontakteAuthService && providedUser != null && vkontakteAuthService.respondsTo('getAccessToken', providedUser.class)) {
             return vkontakteAuthService.getAccessToken(providedUser)
         }
