@@ -30,7 +30,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 class SpringSecurityVkontakteGrailsPlugin {
     def version = "1.0-SNAPSHOT"
     def grailsVersion = "2.0 > *"
-    Map dependsOn = ['springSecurityCore': '2.0-RC2> *']
+    def loadAfter = ['springSecurityCore']
     def observe = ["springSecurityCore"]
 
     def title = 'Vkontakte Authentication for Spring Security'
