@@ -28,7 +28,7 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler
 
 class SpringSecurityVkontakteGrailsPlugin {
-    def version = "1.0"
+    def version = "1.1-SNAPSHOT"
     def grailsVersion = "2.0 > *"
     def loadAfter = ['springSecurityCore']
     def observe = ["springSecurityCore"]
